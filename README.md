@@ -43,5 +43,5 @@ Instrumentation args for creds are set in `app/build.gradle.kts` under `testInst
     3) Relaunch from launcher.
 - Expected: App should detect prior login and go straight to Profiles.
 - Actual: App always shows the login screen again.
-- Impact: Scenario 4 fails; returning users must log in each time.
-- Potential fix: Introduce persisted/injectable session state (e.g., `SessionManager` backed by DataStore/SharedPreferences) and choose NavHost start destination based on stored login flag/token; set/reset on login/logout.
+- Impact: Scenario 4 fails, returning users must log in each time.
+- Potential fix: You could add a persisted session state (e.g., `SessionManager` backed by DataStore/SharedPreferences) and choose NavHost start destination based on stored login flag, set or reset on login/logout.
