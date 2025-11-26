@@ -23,9 +23,10 @@ mockitoCore = "5.17.0"
 mockitoKotlin =  "3.2.0"
 mockitoKotlin2 = "2.2.0"
 truth = "1.1.4"
-androidTestJUnit = "1.2.1"
-androidxCoreTest = "1.6.2"
+androidTestJUnit = "1.1.5"
+androidxCoreTest = "1.5.0"
 androidxCoreTesting = "2.2.0"
+uiautomator = "2.3.0"
 
 #DI
 hilt = "2.56.1"
@@ -102,6 +103,8 @@ android-test-junit = { group = "androidx.test.ext", name = "junit", version.ref 
 compose-testing = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose" }
 compose-testing-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "compose" }
 hilt-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 ktlint-compose = { group = "com.twitter.compose.rules", name = "ktlint", version.ref = "ktlintCompose" }
 javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javaPoet" }
 glide-glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
