@@ -55,6 +55,5 @@ dependencies {
     testImplementation(libs.bundles.testUnit)
 
     androidTestImplementation(libs.bundles.testUi)
-    androidTestImplementation(libs.androidx.uiautomator)
     kaptAndroidTest(libs.hilt.android.compiler)
 }
