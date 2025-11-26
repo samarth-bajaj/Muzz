@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -68,9 +69,9 @@ fun LoginScreen(
 
     Column(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -88,9 +89,9 @@ fun LoginScreen(
         )
         Surface(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
             shape = RoundedCornerShape(8.dp),
             shadowElevation = 4.dp,
             color = MaterialTheme.colorScheme.background,
@@ -105,7 +106,9 @@ fun LoginScreen(
                     onValueChange = { username = it },
                     label = { Text(stringResource(R.string.login_user_name_hint)) },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("login_username"),
                 )
                 OutlinedTextField(
                     value = password,
@@ -113,9 +116,10 @@ fun LoginScreen(
                     label = { Text(stringResource(R.string.login_password_hint)) },
                     singleLine = true,
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp)
+                            .testTag("login_password"),
                 )
                 Button(
                     onClick = {
@@ -123,9 +127,10 @@ fun LoginScreen(
                         viewModel.login(username, password)
                     },
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp)
+                            .testTag("login_button"),
                 ) {
                     Text(stringResource(R.string.login_button_text))
                 }
@@ -134,7 +139,9 @@ fun LoginScreen(
                     Text(
                         text = message,
                         color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(top = 8.dp),
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .testTag("login_error"),
                     )
                 }
             }

@@ -6,6 +6,14 @@ plugins {
 
 android {
     namespace = "com.test.muzz"
+    defaultConfig {
+        testInstrumentationRunnerArguments.putAll(
+            mapOf(
+                "testUser" to "user",
+                "testPassword" to "password",
+            ),
+        )
+    }
 }
 
 dependencies {
@@ -47,5 +55,6 @@ dependencies {
     testImplementation(libs.bundles.testUnit)
 
     androidTestImplementation(libs.bundles.testUi)
+    androidTestImplementation(libs.androidx.uiautomator)
     kaptAndroidTest(libs.hilt.android.compiler)
 }

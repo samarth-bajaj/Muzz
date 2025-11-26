@@ -34,7 +34,7 @@ fun applyAndroidCompose(
 fun Project.applyUiTests() {
     baseAndroidExtension.run {
         defaultConfig {
-            testInstrumentationRunner = "com.test.news.CustomTestRunner"
+            testInstrumentationRunner = "com.test.muzz.CustomTestRunner"
         }
     }
 }
