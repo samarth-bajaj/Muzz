@@ -1,93 +1,47 @@
-# Muzz QA Technical Test
-## Congratulations, you have reached the next stage which is a technical test.
-##### Please create your own repo and share the solution with us.
+## Automation framework overview
 
-### Description
-Let’s start!
+I have added a Jetpack Compose UI automation layer built with Kotlin, Hilt, and POM. Tests run as `connectedAndroidTest` and use test tags/content descriptions for stable selectors.
 
-We are in the middle of the sprint and the following tasks were just moved to the QA testing column on our board, Manual team have tested and now want Automation to automate the following scenarios:
+### Project changes
+- Fixed instrumentation runner typo `com.test.muzz.CustomTestRunner`.
+- Added a UI Automator dependency for any device-level commands.
+- Added stable test tags to login inputs/button/error, existing tags in Profiles were reused.
+- Tests consume credentials from instrumentation args (defaults set in Gradle).
+  - These inline defaults are for the take home test only, in a real project you would keep creds out of the repo (gitignored locally) or inject via CI secrets/env vars.
 
-##
-### 1 - As a user I want to log in to the app
+### Test helpers
+- `BaseTest.kt`: shared Hilt + Compose rules.
+- `TestCredentials.kt`: reads `testUser`/`testPassword` from instrumentation args.
+- Page Objects:
+    - `LoginPage.kt`: wraps username/password entry, login action, error assertion.
+    - `ProfilesPage.kt`: wraps loading wait, liking/passing actions, error/retry assertions.
 
-Given - The user opens the app for the first time (when not logged in yet)
+### Tests
+- `LoginTests.kt`
+    - Wrong creds show error.
+    - Valid creds navigate to Profiles.
+    - Recreate activity after login keeps you on Profiles.
+    - “New session” recreation also keeps you on Profiles (closest I could get without persisted login state).
+- `ProfilesTests.kt`
+    - Profiles load after login (when online).
+    - Deck finishes after likes/passes on all profiles.
+- `ProfilesErrorTests.kt`
+    - Overrides the profile repository via Hilt (`@UninstallModules`) to always throw, asserting the “Failed to profiles” error UI and retry button. This simulates “no internet” since the app uses a fake repo and has no real network path.
 
-Then - The login screen with user name and password entries and login button is displayed
+### Running tests
+```
+./gradlew connectedAndroidTest
+```
+Instrumentation args for creds are set in `app/build.gradle.kts` under `testInstrumentationRunnerArguments`.
+### Notes on Scenario 4 (returning users)
 
-#### Scenario 2 - User login failed
-
-Given - The user provided wrong user name and/or password
-
-When - The Login button is clicked
-
-Then - The error markers are displayed by user name and/or password entries
-
-#### Scenario 3 - User login succeed (credentials provided below)
-
-Given - The user provided correct credentials
-
-When - Login button is clicked
-
-Then - User is taken to the discover profiles screen
-
-#### Scenario 4 - User opens app next time (when previously logged in)
-
-Given - The user opens app next time (when previously logged in)
-
-Then - User is taken straight to the discover screen
-
- ##
-
-### 2 - As a user I want to like dating profiles
-
-#### Scenario 1 - Profiles are loaded
-
-Given - The user successfully logged in to the app
-
-When - There is internet connection
-
-Then - Profiles are displayed
-
-#### Scenario 2 - Failed to Profiles
-
-Given - The user successfully logged in to the app
-
-When - There is no internet connection
-
-Then - “Failed to profiles” error message is displayed with a Retry button
-
-#### Scenario 3 - liking profiles
-
-Given - The dating profiles are successfully loaded on the screen
-
-When - The user likes one or more of the profiles
-
-Then - after 5 lkes/passes, the user should see the correct number of profiles liked
-
-#### Login credentials:
-#### user: user
-#### password: password
-
-##
-
-We expect that these functions will be tested both manually and automatically by you.
-
-### Manual tests - We expect that any bugs will be reported in clear form
-
-### Automated tests - Using jetpack compose test or any other tool of your choosing (explain why)
-
-* At Muzz we love clean code so please try to write your tests neatly.
-
-* It’s not mandatory but using an additional abstraction level for your tests (like POM or your own framework to facilitate writing tests) will be very much appreciated
-
-* As a note, we won't consider any automation task submission created with a test recorder.
-
-* Tests should pass even if device locale is changed i.e. tests in French
-
-At Muzz we highly appreciate good communication at all times. If you have any questions, please don’t hesitate to ask us :)
-
-### Next Steps
-Once we have received your test along with any other documentation which you feel is necessary for your submission, we will review it. If we like what we see, we'll invite you into our office for
-a face to face discussion where we’ll ask you to go through your test, explaining any decisions that you've made.
-
-## Good luck!
+**Bug (manual): Logged-in users are not kept on cold start**
+- Environment: emulator/device, any locale.
+- Steps:
+    1) Launch app, enter valid creds (`user`/`password`), land on Profiles.
+    2) Force-stop or fully close the app.
+    3) Relaunch from launcher.
+- Expected: App should detect prior login and go straight to Profiles.
+- Actual: App always shows the login screen again.
+- Impact: Scenario 4 fails; returning users must log in each time.
+- Potential fix: Introduce persisted/injectable session state (e.g., `SessionManager` backed by DataStore/SharedPreferences) and choose NavHost start destination based on stored login flag/token; set/reset on login/logout.
